@@ -8,7 +8,7 @@
     "test": "jest",
     "build": "npx tsc",
     "build:watch": "npx tsc --watch",
-    "start": "npm run build && cross-env NODE_ENV=production node build/src/index.js",
+    "start": "cross-env NODE_ENV=production node build/src/index.js",
     "start:dev": "cross-env NODE_ENV=development nodemon build/src/index.js"
   },
   "repository": {
