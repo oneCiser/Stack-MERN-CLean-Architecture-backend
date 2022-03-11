@@ -15,7 +15,7 @@ export default class UserController {
                 throw new HttpError(400, CreateUserValidator.errors);
             }
             const userInteractor = UserInteractorFactory.get('singup', 'mongodb');
-            userInteractor.setContext(req.body);
+            userInteractor.setContext(newUser);
             await userInteractor.execute();
             const data = userInteractor.getData();
             const response = new ResponseSchema({
