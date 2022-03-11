@@ -2,13 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "jest.config.js",
   "scripts": {
     "test:clear": "jest --clearCache",
     "test:watch": "jest --watch",
     "test": "jest",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "build": "npx tsc",
+    "build:watch": "npx tsc --watch",
     "start": "npm run build && cross-env NODE_ENV=production node build/src/index.js",
     "start:dev": "cross-env NODE_ENV=development nodemon build/src/index.js"
   },
@@ -56,6 +55,7 @@
     "@types/uuid": "^8.3.4",
     "jest": "^27.5.1",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "typescript": "^4.6.2"
   }
 }
