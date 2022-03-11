@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {UserInteractorFactory} from "../factories/interactors/user"
+import {ResponseSchema} from "../schemas/IOHTTP";
+import {HttpError, EntityExistingError} from "../utils/errors";
 
 export default class UserController {
 
@@ -9,9 +11,24 @@ export default class UserController {
             userInteractor.setContext(req.body);
             await userInteractor.execute();
             const data = userInteractor.getData();
-            res.status(200).json(data);
+            const response = new ResponseSchema({
+                statusCode: 200,
+                data:{
+                    username: data.username,
+                }
+            });
+            res.status(200).json(response);
         } catch (error) {
-            next(error);
+            if(error instanceof EntityExistingError){
+                next(
+                    new HttpError(409,error)
+                );
+            }
+            else{
+                next(
+                    new HttpError(500,error)
+                );
+            }
         }
     }
 }
