@@ -37,7 +37,7 @@ validateUser(username, done);
  */
 const opt: StrategyOptions = {
     jwtFromRequest:ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET || 'secret'
+    secretOrKey: process.env.JWT_AUTH_SECRET || 'secret'
 }
 /**
  * @memberof JWTStrategy
