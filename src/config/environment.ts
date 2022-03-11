@@ -1,4 +1,5 @@
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
+const dotenv = require("dotenv");
 
 const environment = process.env.NODE_ENV;
 
