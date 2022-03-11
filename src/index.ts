@@ -1,5 +1,6 @@
 import "./config/environment";
 import "./database/mongodb/connection";
+import "./database/redis/connection";
 import app from "./api";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 4000;
