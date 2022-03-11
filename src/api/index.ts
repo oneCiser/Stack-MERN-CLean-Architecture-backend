@@ -1,6 +1,6 @@
 import cors from "cors";
 import morgan from "morgan";
-import express, { Application} from "express";
+import express, { Application, Router} from "express";
 import session from "express-session";
 import redisStore from "../database/redis"
 import passport from "passport";
@@ -22,7 +22,9 @@ class Server{
         this.loadErrorHandler();
     }
     private loadRoutes(): void{
-        this.app.use("/v1", APIV1);
+        const routes: Router = Router();
+        routes.use("/v1", APIV1);
+        this.app.use("/api", routes);
     }
     private loadCors(): void{
         this.app.use(cors());
