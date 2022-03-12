@@ -30,13 +30,26 @@ const CreateProductSchema: JSONSchemaType<IProductBase> = {
     },
     additionalProperties: false
 }
+const QueryProductSchema: JSONSchemaType<IQueryProduct> = {
+    type: "object",
+    required: [],
+    properties: {
+        _id: {type: "string", nullable: true},
+        name: {type: "string", nullable: true},
+        price: {type: "number", nullable: true},
+        description: {type: "string", nullable: true},
+        photo: {type: "string", nullable: true}
+    },
+    additionalProperties: false
+}
 
 const CreateProductValidator = ajv.compile(CreateProductSchema);
-
+const QueryProductValidator = ajv.compile(QueryProductSchema);
 export {
     IProductBase,
     IProductDB,
     IQueryProduct,
-    CreateProductValidator
+    CreateProductValidator,
+    QueryProductValidator
 }
 

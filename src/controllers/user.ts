@@ -1,4 +1,3 @@
-import ValidationError from "ajv/dist/runtime/validation_error";
 import { NextFunction, Request, Response } from "express";
 import {UserInteractorFactory} from "../factories/interactors/user"
 import {ResponseSchema} from "../schemas/IOHTTP";

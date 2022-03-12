@@ -7,6 +7,6 @@ export default function createFileUrl(req: Request) {
         req.hostname +
         ":" +
         req.socket.localPort +
-        "/images/" +
+        "/photos/" +
         req?.file?.filename;
 }
