@@ -8,6 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 import jwtStrategy from "../auth/strategy/jwtStrategy";
 import APIV1 from "./v1";
 import { errorHandler } from "../middlewares";
+import "../config/environment"
+
 
 
 class Server{
@@ -61,6 +63,9 @@ class Server{
         this.app.listen(port, () => {
             console.log(`Restful API listening at port: ${port}`);
         });
+    }
+    public getApp(): Application{
+        return this.app;
     }
 }
 

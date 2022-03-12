@@ -17,7 +17,7 @@ const RESOURCE_URL = `${API_URL}${API_VERSION}${API_RESOURCE}`;
 let generateName: string;
 let generatePassword: string;
 
-beforeAll( () => {
+beforeAll(() => {
     generateName = uniqueNamesGenerator({
     dictionaries: [adjectives, colors, animals],
     style: 'capital'
@@ -29,22 +29,27 @@ beforeAll( () => {
 });
 
 
-afterAll(() => {
-  mongoose.disconnect()
-  redisClient.disconnect()
+afterAll(async () => {
+  await mongoose.disconnect()
+  await redisClient.disconnect();
 });
 
 describe(`Auth resource ${RESOURCE_URL}`, () => {
     describe(`Signup ${RESOURCE_URL}/signup`, () => {
         describe("Satisfactory creation", () => {
             it("Should return 201 on successful creation", async () => {
-                const response = await request(app)
-                .post(`${RESOURCE_URL}/signup`)
-                .send({
-                    username: generateName,
-                    password: generatePassword
-                });
-                expect(response.status).toBe(201);
+                try {
+                    const response = await request(app)
+                    .post(`${RESOURCE_URL}/signup`)
+                    .send({
+                        username: generateName,
+                        password: generatePassword
+                    });
+                    expect(response.status).toBe(201);
+                } catch (error) {
+                    console.log(error);
+                }
+
             });
         });
         describe("Unsatisfactory creation", () => {
