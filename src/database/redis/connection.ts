@@ -15,5 +15,4 @@ async function connectRedis(){
     await redisClient.connect();
 }
 connectRedis();
-
 export default redisClient;

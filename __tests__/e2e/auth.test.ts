@@ -17,7 +17,7 @@ const RESOURCE_URL = `${API_URL}${API_VERSION}${API_RESOURCE}`;
 let generateName: string;
 let generatePassword: string;
 
-beforeAll(() => {
+beforeAll(async () => {
     generateName = uniqueNamesGenerator({
     dictionaries: [adjectives, colors, animals],
     style: 'capital'
