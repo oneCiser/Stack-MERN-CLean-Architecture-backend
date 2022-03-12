@@ -1,3 +1,4 @@
+import path from "path"
 import cors from "cors";
 import morgan from "morgan";
 import express, { Application, Router} from "express";
@@ -27,6 +28,7 @@ class Server{
         const routes: Router = Router();
         routes.use("/v1", APIV1);
         this.app.use("/api", routes);
+        this.app.get("/public", express.static(path.join(__dirname, "../../public")));
     }
     private loadCors(): void{
         this.app.use(cors());

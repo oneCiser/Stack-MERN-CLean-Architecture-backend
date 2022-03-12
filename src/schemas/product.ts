@@ -6,12 +6,14 @@ interface IProductBase {
     name: string;
     price: number;
     description: string;
+    photo?: string;
 }
 
 interface IQueryProduct extends IPersistence {
     name?: string;
     price?: number;
     description?: string;
+    photo?: string;
 }
 
 interface IProductDB extends IProductBase, IPersistence { }
@@ -23,7 +25,8 @@ const CreateProductSchema: JSONSchemaType<IProductBase> = {
     properties: {
         name: {type: "string"},
         price: {type: "number"},
-        description: {type: "string"}
+        description: {type: "string"},
+        photo: {type: "string", nullable: true}
     },
     additionalProperties: false
 }
