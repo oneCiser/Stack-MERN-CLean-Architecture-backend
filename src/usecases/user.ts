@@ -46,7 +46,7 @@ class LogInInteractor<T extends IUserDB, R extends IUserBase, Q extends IQueryUs
         if(!isValidPassword){
             throw new CredentialsError("Credentials are not correct"); 
         }
-        const authPayload = this.userService.login(username);
+        const authPayload = await this.userService.login(username);
         this.data = authPayload;
     }
 }
