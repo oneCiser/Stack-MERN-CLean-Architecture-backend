@@ -3,7 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import {UserInteractorFactory} from "../factories/interactors/user"
 import {ResponseSchema} from "../schemas/IOHTTP";
 import {CreateUserValidator, IUserBase} from "../schemas/user";
-import {HttpError, EntityExistingError} from "../utils/errors";
+import {HttpError, EntityExistingError, CredentialsError} from "../utils/errors";
+import AbstractInteractor from "../usecases/base";
 
 export default class UserController {
 
@@ -11,10 +12,9 @@ export default class UserController {
         try {
             const newUser: IUserBase = req.body;
             if(!CreateUserValidator(newUser)){
-                CreateUserValidator.errors
                 throw new HttpError(400, CreateUserValidator.errors);
             }
-            const userInteractor = UserInteractorFactory.get('singup', 'mongodb');
+            const userInteractor:AbstractInteractor = UserInteractorFactory.get('singup', 'mongodb');
             userInteractor.setContext(newUser);
             await userInteractor.execute();
             const data = userInteractor.getData();
@@ -31,11 +31,71 @@ export default class UserController {
                     new HttpError(409,error)
                 );
             }
+            else if(error instanceof HttpError){
+                next(
+                    error
+                );
+            }
             else{
                 next(
                     new HttpError(500,error)
                 );
             }
         }
+    }
+    static async logIn(req: Request, res: Response, next: NextFunction){
+        try {
+            const user: IUserBase = req.body;
+            if(!CreateUserValidator(user)){
+                throw new HttpError(400, CreateUserValidator.errors);
+            }
+            const userInteractor:AbstractInteractor = UserInteractorFactory.get('login', 'mongodb');
+            userInteractor.setContext(user);
+            await userInteractor.execute();
+            const data = userInteractor.getData();
+            const response = new ResponseSchema({
+                statusCode: 200,
+                data:data
+            });
+            res.status(200).json(response);
+        } catch (error) {
+            if(error instanceof EntityExistingError){
+                next(
+                    new HttpError(409,error)
+                );
+            }
+            else if (error instanceof CredentialsError){
+                next(
+                    new HttpError(401,error)
+                );
+            }
+            else if(error instanceof HttpError){
+                next(
+                    error
+                );
+            }
+            else{
+                next(
+                    new HttpError(500,error)
+                );
+            }
+        }
+    }
+    static async logOut(req: Request, res: Response, next: NextFunction){
+        try {
+            req.logout();
+            res.status(205).json({});
+        } catch (error) {
+            if(error instanceof HttpError){
+                next(
+                    error
+                );
+            }
+            else{
+                next(
+                    new HttpError(500,error)
+                );
+            }
+        } 
     }
 }

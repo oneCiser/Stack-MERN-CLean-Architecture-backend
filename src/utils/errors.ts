@@ -12,10 +12,12 @@ class HttpError extends Error {
 }
 
 class EntityExistingError extends Error {}
+class CredentialsError extends Error {}
 
 export {
   HttpError,
-  EntityExistingError
+  EntityExistingError,
+  CredentialsError
 }
 
 

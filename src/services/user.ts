@@ -1,7 +1,7 @@
 import {ICRUD} from "../domain/repositories/ICRUD";
 import bcrypt from "bcrypt";
 import {encodeToken} from "../auth/utils";
-import {authPayload} from "../schemas/jwt";
+import {AuthPayload} from "../schemas/jwt";
 
 export default class UserService<T, R, Q> {
     private repository: ICRUD<T, R, Q>;
@@ -14,7 +14,7 @@ export default class UserService<T, R, Q> {
         return this.repository.create(user);
     }
 
-    async login(username: string): Promise<authPayload> {
+    async login(username: string): Promise<AuthPayload> {
         let payload = {
             sub: username
         };
@@ -24,8 +24,7 @@ export default class UserService<T, R, Q> {
             const token = encodeToken(payload, SECRET, EXPIRES_IN);
             const response = {
                 username: username,
-                access_token:"",
-                refresh_token:""
+                access_token:token
             }
             return response;
         }
