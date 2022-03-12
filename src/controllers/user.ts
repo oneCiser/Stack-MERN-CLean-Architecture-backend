@@ -18,13 +18,14 @@ export default class UserController {
             userInteractor.setContext(newUser);
             await userInteractor.execute();
             const data = userInteractor.getData();
+            const statusCode: number = 201;
             const response = new ResponseSchema({
-                statusCode: 200,
+                statusCode: statusCode,
                 data:{
                     username: data.username,
                 }
             });
-            res.status(200).json(response);
+            res.status(statusCode).json(response);
         } catch (error) {
             if(error instanceof EntityExistingError){
                 next(
@@ -53,11 +54,12 @@ export default class UserController {
             userInteractor.setContext(user);
             await userInteractor.execute();
             const data = userInteractor.getData();
+            const statusCode: number = 200;
             const response = new ResponseSchema({
-                statusCode: 200,
+                statusCode: statusCode,
                 data:data
             });
-            res.status(200).json(response);
+            res.status(statusCode).json(response);
         } catch (error) {
             if(error instanceof EntityExistingError){
                 next(
