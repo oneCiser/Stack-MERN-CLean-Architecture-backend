@@ -11,7 +11,7 @@ export default class ProductController{
     static async getAll(req: Request, res: Response, next: NextFunction){
         try {
 
-            const productInteractor:AbstractInteractor = ProductInteractorFactory.get('getAll', 'mongodb');
+            const productInteractor:AbstractInteractor = ProductInteractorFactory.get('getall', 'mongodb');
             productInteractor.setContext({});
             await productInteractor.execute();
             const data = productInteractor.getData();
@@ -62,7 +62,7 @@ export default class ProductController{
             }
             else if(error instanceof EntityExistingError){
                 next(
-                    new HttpError(409 ,error)
+                    new HttpError(404 ,error)
                 );
             }
             else{
@@ -123,7 +123,7 @@ export default class ProductController{
                 throw new HttpError(400, CreateProductValidator.errors);
             }
             const productInteractor:AbstractInteractor = ProductInteractorFactory.get('update', 'mongodb');
-            productInteractor.setContext(product);
+            productInteractor.setContext(context);
             await productInteractor.execute();
             const data = productInteractor.getData();
             const statusCode: number = 200;
@@ -212,7 +212,7 @@ export default class ProductController{
                 targetProduct:query
             };
             const productInteractor:AbstractInteractor = ProductInteractorFactory.get('update', 'mongodb');
-            productInteractor.setContext(query);
+            productInteractor.setContext(context);
             await productInteractor.execute();
             const data = productInteractor.getData();
             const statusCode: number = 200;

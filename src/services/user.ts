@@ -18,10 +18,10 @@ export default class UserService<T, R, Q> {
         let payload = {
             sub: username
         };
-        const SECRET = process.env.JWT_SECRET;
+        const SECRET = process.env.JWT_AUTH_SECRET || 'secret';
         const EXPIRES_IN = process.env.JWT_EXPIRES_IN;
         if(SECRET){
-            const token = encodeToken(payload, SECRET, EXPIRES_IN);
+            const token = encodeToken(payload, String(SECRET), EXPIRES_IN);
             const response = {
                 username: username,
                 access_token:token

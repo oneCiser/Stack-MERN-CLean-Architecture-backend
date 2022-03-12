@@ -4,10 +4,10 @@ import {
     colors,
     animals,
   } from "unique-names-generator";
-  import mongoose from "mongoose";
-  import redisClient from "../../src/database/redis/connection";
-  import app from "../../src";
-  const request = require("supertest");
+import mongoose from "mongoose";
+import redisClient from "../../src/database/redis/connection";
+import app from "../../src";
+const request = require("supertest");
 const API_URL = "/api";
 const API_VERSION = "/v1";
 const API_RESOURCE = "/product";
@@ -35,8 +35,8 @@ beforeAll(async () => {
         password: generatePassword
     });
     const response = await request(app)
-        .set("Content-Type", "application/json")
         .post(`${AUTH_URL}/login`)
+        .set("Content-Type", "application/json")
         .send({
             username: generateName,
             password: generatePassword
@@ -55,17 +55,22 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
     describe(`Create ${RESOURCE_URL}`, () => {
         it("Should return 201 on successful creation", async () => {
             try {
+                const newName = uniqueNamesGenerator({
+                    dictionaries: [adjectives, colors, animals],
+                    style: 'capital'
+                  });
                 const response = await request(app)
                 .post(`${RESOURCE_URL}/create`)
                 .set("Authorization", authToken)
                 .send({
-                    name: "Test Product",
+                    name: newName,
                     price: 100,
                     description:"Test Product Description",
                 });
                 expect(response.status).toBe(201);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
         it("Shoyld return  400 on partial data", async () => {
@@ -75,54 +80,77 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
                 .set("Authorization", authToken)
                 .send({
                     name: "Test Product",
-                    price: 100,
                 });
                 expect(response.status).toBe(400);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
     });
     describe(`Update ${RESOURCE_URL}`, () => {
         it("Should return 200 on successful update", async () => {
             try {
+                const newName = uniqueNamesGenerator({
+                    dictionaries: [adjectives, colors, animals],
+                    style: 'capital'
+                  });
                 const created = await request(app)
                 .post(`${RESOURCE_URL}/create`)
                 .set("Authorization", authToken)
                 .send({
-                    name: "Test Product 123",
+                    name: newName,
                     price: 100,
                     description:"Test Product Description",
                 });
-                const newName = "Test Product new"
+                const updateName = `${newName}_updated`;
                 const reponse = await request(app)
                     .put(`${RESOURCE_URL}/${created.body.data._id}`)
                     .set("Authorization", authToken)
                     .send({
-                        name: newName,
+                        name: updateName,
                         price: 100,
                         description:"Test Product Description",
                     });
                     expect(reponse.status).toBe(200);
                     expect(reponse.body.data._id).toBeDefined();
-                    expect(reponse.body.data.name).toEqual(newName);
+                    expect(reponse.body.data.name).toEqual(updateName);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
         it("Should return 404 on not found", async () => {
             try {
-                const response = await request(app)
-                .put(`${RESOURCE_URL}/5e9e9d0d7e8f8b1e8c6d9e9a`)
+                const newName = uniqueNamesGenerator({
+                    dictionaries: [adjectives, colors, animals],
+                    style: 'capital'
+                  });
+                const created = await request(app)
+                .post(`${RESOURCE_URL}/create`)
                 .set("Authorization", authToken)
                 .send({
-                    name: "Test Product",
+                    name: newName,
                     price: 100,
                     description:"Test Product Description",
                 });
-                expect(response.status).toBe(404);
+                const deleteResponse = await request(app)
+                    .delete(`${RESOURCE_URL}/${created.body.data._id}`)
+                    .set("Authorization", authToken);
+                const updateName = `${newName}_updated`;
+                const reponse = await request(app)
+                    .put(`${RESOURCE_URL}/${created.body.data._id}`)
+                    .set("Authorization", authToken)
+                    .send({
+                        name: updateName,
+                        price: 100,
+                        description:"Test Product Description",
+                    });
+                        
+                expect(reponse.status).toBe(404);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
     });
@@ -130,11 +158,15 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
     describe(`Get ${RESOURCE_URL}`, () => {
         it("Should return 200 on successful get", async () => {
             try {
+                const newName = uniqueNamesGenerator({
+                    dictionaries: [adjectives, colors, animals],
+                    style: 'capital'
+                  });
                 const created = await request(app)
                 .post(`${RESOURCE_URL}/create`)
                 .set("Authorization", authToken)
                 .send({
-                    name: "Test Product ewqeqw",
+                    name: newName,
                     price: 100,
                     description:"Test Product Description",
                 });
@@ -143,9 +175,10 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
                     .set("Authorization", authToken);
                 expect(response.status).toBe(200);
                 expect(response.body.data._id).toBeDefined();
-                expect(response.body.data.name).toEqual("Test Product ewqeqw");
+                expect(response.body.data.name).toEqual(newName);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
         it("Should return 404 on not found", async () => {
@@ -156,6 +189,7 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
                 expect(response.status).toBe(404);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
     });
@@ -163,11 +197,15 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
     describe(`Delete ${RESOURCE_URL}`, () => {
         it("Should return 200 on successful delete", async () => {
             try {
+                const newName = uniqueNamesGenerator({
+                    dictionaries: [adjectives, colors, animals],
+                    style: 'capital'
+                  });
                 const created = await request(app)
                 .post(`${RESOURCE_URL}/create`)
                 .set("Authorization", authToken)
                 .send({
-                    name: "Test Product nuwqneinwquienwqiu",
+                    name: newName,
                     price: 100,
                     description:"Test Product Description",
                 });
@@ -177,6 +215,7 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
                 expect(response.status).toBe(200);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
         it("Should return 404 on not found", async () => {
@@ -187,6 +226,7 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
                 expect(response.status).toBe(404);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
     });
@@ -194,11 +234,15 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
     describe(`Get all ${RESOURCE_URL}`, () => {
         it("Should return 200 on successful get", async () => {
             try {
+                const newName = uniqueNamesGenerator({
+                    dictionaries: [adjectives, colors, animals],
+                    style: 'capital'
+                  });
                 const created = await request(app)
                 .post(`${RESOURCE_URL}/create`)
                 .set("Authorization", authToken)
                 .send({
-                    name: "Test Product ewqeqw",
+                    name: newName,
                     price: 100,
                     description:"Test Product Description",
                 });
@@ -209,6 +253,7 @@ describe(`Product resource ${RESOURCE_URL}`, () => {
                 expect(response.body.data.length).toBeGreaterThan(0);
             } catch (error) {
                 console.log(error);
+                expect(error).toBeNull();
             }
         });
     });

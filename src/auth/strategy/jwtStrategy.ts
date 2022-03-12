@@ -6,29 +6,34 @@ import {IUserDB} from "../../schemas/user";
 import '../../auth/strategy/jwtStrategy';
 
 
-async function validateUser(id: string, done: any): Promise<void> {
+function validateUser(id: string, done: any): void {
     try {
         const service = UserServiceFactory.get('mongodb');
-        const user: IUserDB | null = await service.getUser({username: id});
-        if(user){
-            return done(null, user);
-        }
-        else{
+        service.getUser({username: id})
+        .then((user: IUserDB) => {
+            if (user) {
+                return done(null, user);
+            }
             return done(null, false);
-        }
+        })
+        .catch((err: Error) => {
+            return done(err, false);
+        });
+
         
     } catch (err) {
+        console.log("validateUser", err);
         return done(err, false);
     }
 }
 
 
-passport.serializeUser(async function (user: any, done) {
+passport.serializeUser(function (user: any, done) {
     done(null, user.username);
   });
   
-passport.deserializeUser(async function (username: string, done) {
-validateUser(username, done);
+passport.deserializeUser(function (username: string, done) {
+    validateUser(username, done);
 });
 
 /**
@@ -44,7 +49,7 @@ const opt: StrategyOptions = {
  * @description Strategy of jwt in passport
  */
 export default new Strategy(opt,
-    async function(jwt_payload, done) {
+    function(jwt_payload, done) {
         validateUser(jwt_payload.sub, done);
     });
 

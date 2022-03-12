@@ -33,6 +33,7 @@ class UpdateProductInteractor<T, R extends IProductBase, Q extends IQueryProduct
         if(!existingProduct){
             throw new EntityExistingError("Product not found");
         }
+        console.log(existingProduct)
         const updateProductDB = await this.productService.update(<Q>targetProduct, updateProduct);
         if(updateProductDB){
             this.data = updateProductDB;
@@ -68,7 +69,7 @@ class GetProductInteractor<T, R extends IProductBase, Q extends IQueryProduct> e
             this.data = productDB;
         }
         else{
-            throw new Error("Error getting product");
+            throw new EntityExistingError("Product not found");
         }
     }
 }
@@ -78,6 +79,10 @@ class DeleteProductInteractor<T, R extends IProductBase, Q extends IQueryProduct
 
     async execute(): Promise<void> {
         const query: IQueryProduct = this.context;
+        const existProduct = await this.productService.get(<Q>query);
+        if(!existProduct){
+            throw new EntityExistingError("Product not found");
+        }
         const productDB: T | null = await this.productService.delete(<Q>query);
         if(productDB){
             this.data = productDB;

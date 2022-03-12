@@ -48,7 +48,7 @@ class Server{
               },
             secret: process.env.SESSION_SECRET || "secret",
             resave: false,
-            saveUninitialized: false,
+            saveUninitialized: true,
             store: redisStore,
             name: "sessionstorage"
         });
